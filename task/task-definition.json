@@ -1,0 +1,51 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:035578590291:task-definition/flasky-task:7",
+    "containerDefinitions": [
+        {
+            "name": "flasky-api",
+            "image": "035578590291.dkr.ecr.us-east-1.amazonaws.com/flasky-api:latest",
+            "cpu": 512,
+            "memory": 1024,
+            "portMappings": [
+                {
+                    "containerPort": 5000,
+                    "hostPort": 5000,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "FLASK_ENV",
+                    "value": "production"
+                },
+                {
+                    "name": "API_KEY", 
+                    "value": "your-api-key"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/flasky-api",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "curl -f http://localhost:5000/health || exit 1"
+                ],
+                "interval": 30,
+                "timeout": 5,
+                "retries": 3
+            }
+        }
+    ],
+    "family": "flasky-task",
+    "networkMode": "bridge",
+    "requiresCompatibilities": ["EC2"],
+    "cpu": "512",
+    "memory": "1024"
+}
